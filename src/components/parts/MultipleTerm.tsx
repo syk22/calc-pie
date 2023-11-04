@@ -5,7 +5,7 @@ interface Props {
 }
 
 export const MultipleTerm = ({ multipleNum }: Props) => {
-  console.log(multipleNum);
+  // console.log(multipleNum);
 
   return <span className={css({ fontSize: '5xl', fontWeight: '600' })}>{multipleNum}</span>;
 };
