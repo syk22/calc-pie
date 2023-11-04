@@ -1,7 +1,8 @@
-import { MultipleBlock } from './components/MultipleBlock';
+import { CalcMultiple } from './components/CalcMultiple';
+// import { MultipleBlock } from './components/parts/MultipleBlock';
 
 const App = () => {
-  return <MultipleBlock />;
+  return <CalcMultiple />;
 };
 
 export default App;
