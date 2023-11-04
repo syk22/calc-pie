@@ -1,0 +1,6 @@
+@layer reset, base, tokens, recipes, utilities;
+
+/* 仮 */
+input {
+  outline: 1px solid #999;
+}
