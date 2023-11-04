@@ -1,8 +1,12 @@
-import { CalcMultiple } from './components/CalcMultiple';
-// import { MultipleBlock } from './components/parts/MultipleBlock';
+import { MultipleView } from './pages/MultipleView';
+import { MultipleProvider } from './providers/MultipleProvider';
 
 const App = () => {
-  return <CalcMultiple />;
+  return (
+    <MultipleProvider>
+      <MultipleView />
+    </MultipleProvider>
+  );
 };
 
 export default App;
