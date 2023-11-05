@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { MultipleContext } from '../../providers/MultipleProvider';
 
 export const InputAnswer = () => {
@@ -8,6 +8,10 @@ export const InputAnswer = () => {
     if (value.length > 0) value = value.replace(/[^0-9]/g, '');
     updateAnswer(value);
   };
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  inputRef.current?.focus();
+
   return (
     <>
       <input
@@ -17,6 +21,7 @@ export const InputAnswer = () => {
         maxLength={10}
         value={inputAsAnswer}
         onChange={(e) => handleInput(e.target.value)}
+        ref={inputRef}
       />
     </>
   );
