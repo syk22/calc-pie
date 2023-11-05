@@ -4,12 +4,14 @@ import { flex } from '../../../styled-system/patterns';
 import { InputAnswer } from './InputAnswer';
 import { MultipleTerm } from './MultipleTerm';
 import { MultipleContext } from '../../providers/MultipleProvider';
+import { NoDisplay } from './NoDisplay';
 
 export const CompMultipleLine = () => {
-  const { index, mistakes, inputAsAnswer, termA, termB } = useContext(MultipleContext);
+  const { mistakes, termA, termB } = useContext(MultipleContext);
 
   return (
     <>
+      <NoDisplay />
       <div className={flex({ alignItems: 'center', justifyContent: 'space-around' })}>
         <MultipleTerm multipleNum={termA} />
         <span className={css({ fontSize: '4xl' })}>x</span>
@@ -17,10 +19,9 @@ export const CompMultipleLine = () => {
         <span className={css({ fontSize: '4xl' })}> = </span>
         <InputAnswer />
       </div>
-      <p>input: {inputAsAnswer}</p>
-      <p>No: {index + 1}</p>
+      {/* <p>input: {inputAsAnswer}</p> */}
       <p>mistakes: {mistakes}</p>
-      <p>Answer: {termA * termB}</p>
+      {/* <p>Answer: {termA * termB}</p> */}
     </>
   );
 };
