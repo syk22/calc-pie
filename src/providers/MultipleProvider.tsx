@@ -1,152 +1,190 @@
 import { ReactNode, createContext, useEffect, useState } from 'react';
+
 import { useInterval } from '../hooks/useInterval';
-import { FnType, PageModeType, ResultRecordType } from '../types/multipleTypes';
-import { generateRandomNum } from '../logic/multipleLogic';
+import { generateRandomNum, getThisAnswer } from '../logic/multipleLogic';
 
-interface Value {
-  // amount: number;
-  index: number;
-  setCount: (arg?: 1 | 0) => void;
-  thisAnswer: number;
-  updateAnswer: (arg: string) => void;
-  inputAsAnswer: string;
-  // setInputAsAnswer: React.Dispatch<React.SetStateAction<string>>;
-  mistakes: number;
-  setMistakesCount: (arg?: 1 | 0) => void;
-  time: number;
-  records: ResultRecordType[];
-  termA: number;
-  termB: number;
-  addRecord: FnType;
-  timerControl: FnType;
-  mode: PageModeType;
-  // changeMode: (arg: PageModeType) => void;
-  // numAarray: number[];
-}
+import { PageModeType, ResultRecordType, Value } from '../types/multipleTypes';
 
+// interface
 interface Child {
   children: ReactNode;
 }
 
 // 定数
-const QUESTION_AMOUNT = 5;
-const MAX_NUM = 25;
+const QUESTION_AMOUNT = 20;
+const MAX_NUM = 10;
 
+// コンテキスト作成
 export const MultipleContext = createContext({} as Value);
 
-/**
- * Provider
- */
+// Provider
 export const MultipleProvider = ({ children }: Child) => {
+  /**
+   * プリミティブ値
+   */
   // 何問目
   const [index, setIndex] = useState<number>(0);
+
   // 式の項
   const [termA, setTermA] = useState<number>(0);
   const [termB, setTermB] = useState<number>(0);
+
   // 答え
   const [thisAnswer, setThisAnswer] = useState<number>(10000);
+
   // インプットした文字
   const [inputAsAnswer, setInputAsAnswer] = useState<string>('');
 
+  // 正解・不正解
+  const [resultText, setResultText] = useState<string>('');
+
+  // タイマー
+  const [time, setTime] = useState<number>(0);
+
+  // 間違えた回数
+  const [mistakes, setMistakes] = useState<number>(0);
+
+  // 成績
+  const [records, setRecords] = useState<ResultRecordType[]>([]);
+
+  // ページ表示モード
+  const [mode, setMode] = useState<PageModeType>('calc');
+
+  /**
+   * ロジック
+   */
+  // index, 式の項変更
   // index変更
   const setCount = (num: 1 | 0 = 1) => {
-    if (num === 0) setIndex(0);
-    else setIndex((i) => (i += 1));
+    if (num === 0) {
+      setIndex(1);
+      setIndex(0);
+    } else {
+      setIndex((i) => (i += 1));
+    }
   };
-  // 初期化
+
+  // index初期化
   useEffect(() => {
     setCount(0);
   }, []);
+
   // indexが変わるたびに式の項が変わる
   useEffect(() => {
     setTermA(generateRandomNum(MAX_NUM));
     setTermB(generateRandomNum(MAX_NUM));
   }, [index]);
 
-  const getThisAnswer = (a: number, b: number) => {
-    setThisAnswer(a * b);
-  };
+  // 項が変わるたびに答えを算出
   useEffect(() => {
-    getThisAnswer(termA, termB);
-  }, [termA]);
+    setThisAnswer(getThisAnswer(termA, termB));
+  }, [termA, termB]);
 
+  /**
+   * インプット処理
+   */
   // インプット文字列変更
   const setInputValue = (value?: string) => {
-    // 文字列変更
-    console.log(`value: ${value}`);
-
-    if (value) {
-      console.log('true');
-      setInputAsAnswer(value);
-    } else setInputAsAnswer('');
+    // undefinedの時は空文字
+    if (!value) value = '';
+    setInputAsAnswer(value);
   };
-  const updateAnswer = (value: string): void => {
-    if (value === '0') value = '';
-    if (value.length > 0) value = value.replace(/[^0-9]/g, '');
 
+  // インプット文字を受け取った後
+  const updateAnswer = (value: string): void => {
+    // 先頭０は削除
+    if (value === '0') value = '';
+    // 数字以外は削除
+    if (value.length > 0) value = value.replace(/[^0-9]/g, '');
+    // インプットとして表示
     setInputValue(value);
 
+    // 回答が合っているか判定
     const inputNum = Number(value);
     manageAnswer(inputNum);
   };
 
+  // インプットされた値の判定
   const manageAnswer = (num: number) => {
-    console.log(`答え: ${thisAnswer} / 回答: ${num}`);
+    // console.log(`答え: ${thisAnswer} / 回答: ${num}`);
 
     // 正解時
     if (num === thisAnswer) {
-      console.log('正解');
       // データ登録
       addRecord();
 
+      // 間違えた回数クリア
+      setMistakesCount(0);
+      // 正解
+      changeResultText('正解✅');
+      // タイマーとめる
+      timerControl();
+
       if (index < QUESTION_AMOUNT - 1) {
-        // 次へ
-        setCount();
-        // 間違えた回数クリア
-        setMistakesCount(0);
+        setTimeout(() => {
+          // インプットクリア
+          setInputValue();
+          // 次へ
+          setCount();
+          // 答え作成
+          getThisAnswer(termA, termB);
+          // タイマー開始
+          timerControl();
+        }, 500);
+      } else {
+        // 成績ページへ
+        setMode('result');
         // インプットクリア
         setInputValue();
-      } else {
+        // タイマーリセット
+        setTime(0);
+        // 問題数リセット
         setCount(0);
-        setMistakesCount(0);
-        setMode('result');
       }
     }
 
     // 大きい数を入力した時
     if (num > thisAnswer) {
-      console.log('大きすぎる');
+      changeResultText('まちがい❌');
+      // インプットクリア
       setInputAsAnswer('');
+      // 間違いカウントアップ
       setMistakesCount();
     }
 
     // 小さい数を入力している場合
     if (num < thisAnswer) {
-      console.log('小さい');
-      if (thisAnswer === thisAnswer % 10 ** inputAsAnswer.length) {
+      // if (thisAnswer === thisAnswer % 10 ** (inputAsAnswer.length - 1)) {
+      // 桁数が同じな場合はクリアする
+      if (String(thisAnswer).length === inputAsAnswer.length) {
+        changeResultText('まちがい❌');
+        // インプットクリア
         setInputAsAnswer('');
+        // 間違いカウントアップ
         setMistakesCount();
       }
     }
   };
 
-  // タイマー
-  const [time, setTime] = useState<number>(0);
+  // 正解と間違いの表記
+  const changeResultText = async (text: string) => {
+    setResultText(text);
+    await setTimeout(() => setResultText(''), 500);
+  };
+
+  // タイマー設定
   const { timerControl } = useInterval({
     onUpdate: () => {
       setTime((t) => t + 1);
     },
   });
 
-  // 間違えた回数
-  const [mistakes, setMistakes] = useState<number>(0);
+  // 間違いの数カウント
   const setMistakesCount = (num: 1 | 0 = 1) => {
     if (num === 0) setMistakes(0);
     else setMistakes((c) => (c += 1));
   };
 
-  // 成績
-  const [records, setRecords] = useState<ResultRecordType[]>([]);
   // 成績保存
   const addRecord = (): void => {
     const newRecord: ResultRecordType = {
@@ -159,33 +197,37 @@ export const MultipleProvider = ({ children }: Child) => {
     setRecords((prev) => [...prev, newRecord]);
   };
 
-  // ページ表示モード
-  const [mode, setMode] = useState<PageModeType>('calc');
-  // // モード変更
-  // const changeMode = (modeName: PageModeType): void => {
-  //   setMode(modeName);
-  // };
+  // 成績クリア
+  const clearRecord = (): void => {
+    setRecords([]);
+  };
+
+  // モード変更
+  const changeMode = (modeName: PageModeType): void => {
+    setMode(modeName);
+    timerControl();
+  };
 
   // context
   const value: Value = {
-    // amount: QUESTION_AMOUNT,
+    amount: QUESTION_AMOUNT,
     index,
-    setCount,
     thisAnswer,
-    updateAnswer,
     inputAsAnswer,
-    // setInputAsAnswer,
+    resultText,
     mistakes,
-    setMistakesCount,
     time,
     records,
     termA,
     termB,
+    mode,
+    setCount,
+    updateAnswer,
+    setMistakesCount,
+    clearRecord,
     addRecord,
     timerControl,
-    mode,
-    // changeMode,
-    // numAarray,
+    changeMode,
   };
 
   return <MultipleContext.Provider value={value}>{children}</MultipleContext.Provider>;
