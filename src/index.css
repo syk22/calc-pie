@@ -2,5 +2,23 @@
 
 /* 仮 */
 input {
+  border-radius: 4px;
   outline: 1px solid #999;
+}
+button {
+  border-radius: 4px;
+  color: #fff;
+  background-color: #999;
+  padding: 3px;
+}
+.result-title {
+  font-weight: bold;
+  margin: 15px;
+}
+.result {
+  border-radius: 4px;
+  color: #fff;
+  background-color: #999;
+  padding: 3px;
+  margin: 0 15px 15px;
 }

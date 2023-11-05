@@ -1,25 +1,25 @@
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
+import { MultipleContext } from '../../providers/MultipleProvider';
 
-interface Props {
-  updateAnswer: (arg0: string) => void;
-  inputValue: string;
-}
-
-export const InputAnswer = ({ updateAnswer, inputValue }: Props) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+export const InputAnswer = () => {
+  const { updateAnswer, inputAsAnswer } = useContext(MultipleContext);
   const handleInput = (value: string) => {
     if (value === '0') value = '';
     if (value.length > 0) value = value.replace(/[^0-9]/g, '');
-    if (inputRef.current) inputRef.current.value = value;
     updateAnswer(value);
   };
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  inputRef.current?.focus();
+
   return (
     <>
       <input
         type="text"
         inputMode="numeric"
+        name="multipleInput"
         maxLength={10}
-        value={inputValue}
+        value={inputAsAnswer}
         onChange={(e) => handleInput(e.target.value)}
         ref={inputRef}
       />
