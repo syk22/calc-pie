@@ -12,9 +12,12 @@ interface Control {
 export const useInterval = ({ onUpdate }: Props): Control => {
   const onUpdateRef = useRef<FnType>();
 
-  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [isRunning, setIsRunning] = useState<boolean>(true);
 
   const timerControl: FnType = () => setIsRunning((bool) => !bool);
+  // const timerStart: FnType = () => setIsRunning(true);
+  // const timerEnd: FnType = () => setIsRunning(false);
+  // const timerControl: FnType = () => setIsRunning((bool) => !bool);
   useEffect(() => {
     onUpdateRef.current = onUpdate;
   }, []);
