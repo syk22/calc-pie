@@ -1,5 +1,7 @@
 import { useContext } from 'react';
 
+import { flex } from '../../styled-system/patterns';
+
 import { MultipleContext } from '../providers/MultipleProvider';
 
 import { ResultRecordType } from '../types/multipleTypes';
@@ -22,8 +24,12 @@ const writeRow = (data: ResultRecordType) => {
 
 export const CalcMultipleResult = () => {
   // 計算結果
-  const { records } = useContext(MultipleContext);
+  const { records, clearRecord, changeMode } = useContext(MultipleContext);
 
+  const continueGame = () => {
+    clearRecord();
+    changeMode('calc');
+  };
   return (
     <>
       <h1 className="result-title">成績</h1>
@@ -34,6 +40,9 @@ export const CalcMultipleResult = () => {
           </div>
         );
       })}
+      <p className={flex({ alignItems: 'center', justifyContent: 'space-around' })}>
+        <button onClick={continueGame}>もう一度</button>
+      </p>
     </>
   );
 };
