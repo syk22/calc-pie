@@ -1,10 +1,12 @@
 export const generateRandomNum = (max: number) => {
   const randomNum = () => {
-    return Math.ceil(Math.random() * max);
+    let i = 0;
+    do i = Math.ceil((Math.random() * 1000) / max);
+    while (i === 0 || i > max);
+    return i;
   };
-  let term = randomNum();
-  if (term === 0) while (term === 0) term = randomNum();
-  return term;
+
+  return randomNum();
 };
 
 export const getThisAnswer = (a: number, b: number) => {
