@@ -4,14 +4,14 @@ import { flex } from '../../../styled-system/patterns';
 import { InputAnswer } from './InputAnswer';
 import { MultipleTerm } from './MultipleTerm';
 import { MultipleContext } from '../../providers/MultipleProvider';
-import { NoDisplay } from './NoDisplay';
+import { NumDisplay } from './NumDisplay';
 
 export const CompMultipleLine = () => {
   const { mistakes, termA, termB } = useContext(MultipleContext);
 
   return (
     <>
-      <NoDisplay />
+      <NumDisplay />
       <div className={flex({ alignItems: 'center', justifyContent: 'space-around' })}>
         <MultipleTerm multipleNum={termA} />
         <span className={css({ fontSize: '4xl' })}>x</span>

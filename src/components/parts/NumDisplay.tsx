@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { css } from '../../../styled-system/css';
 import { MultipleContext } from '../../providers/MultipleProvider';
 
-export const NoDisplay = () => {
+export const NumDisplay = () => {
   const { amount, index, resultText } = useContext(MultipleContext);
   return (
     <p>
