@@ -7,16 +7,18 @@ interface Props {
 
 interface Control {
   timerControl: FnType;
+  timerStart: FnType;
+  timerEnd: FnType;
 }
 
 export const useInterval = ({ onUpdate }: Props): Control => {
   const onUpdateRef = useRef<FnType>();
 
-  const [isRunning, setIsRunning] = useState<boolean>(true);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
 
   const timerControl: FnType = () => setIsRunning((bool) => !bool);
-  // const timerStart: FnType = () => setIsRunning(true);
-  // const timerEnd: FnType = () => setIsRunning(false);
+  const timerStart: FnType = () => setIsRunning(true);
+  const timerEnd: FnType = () => setIsRunning(false);
   // const timerControl: FnType = () => setIsRunning((bool) => !bool);
   useEffect(() => {
     onUpdateRef.current = onUpdate;
@@ -31,5 +33,5 @@ export const useInterval = ({ onUpdate }: Props): Control => {
     }
     return () => timerId && clearInterval(timerId);
   }, [isRunning]);
-  return { timerControl };
+  return { timerControl, timerStart, timerEnd };
 };
