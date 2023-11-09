@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { Link } from 'react-router-dom';
 
 import { flex } from '../../styled-system/patterns';
 
@@ -24,12 +25,19 @@ const writeRow = (data: ResultRecordType) => {
 
 export const CalcMultipleResult = () => {
   // 計算結果
-  const { records, clearRecord, changeMode } = useContext(MultipleContext);
+  const { records, setTime, timerEnd, setCount, clearRecord, changeMode } = useContext(MultipleContext);
 
-  const continueGame = () => {
+  const resetGame = async () => {
     clearRecord();
+    timerEnd();
+    await setTime(0);
+    await setCount(0);
+  };
+  const continueGame = () => {
+    resetGame();
     changeMode('calc');
   };
+
   return (
     <>
       <h1 className="result-title">成績</h1>
@@ -42,6 +50,11 @@ export const CalcMultipleResult = () => {
       })}
       <p className={flex({ alignItems: 'center', justifyContent: 'space-around' })}>
         <button onClick={continueGame}>もう一度</button>
+      </p>
+      <p className={flex({ alignItems: 'center', justifyContent: 'space-around' })}>
+        <Link to={'/'}>
+          <button onClick={resetGame}>トップページに戻る</button>
+        </Link>
       </p>
     </>
   );

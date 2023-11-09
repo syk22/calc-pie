@@ -1,9 +1,13 @@
 export const generateRandomNum = (max: number) => {
   const randomNum = () => {
-    return Math.ceil(Math.random() * max);
+    const powerNum = 10 ** String(max).length;
+    return Math.ceil(Math.random() * powerNum);
   };
-  let term = randomNum();
-  if (term === 0) while (term === 0) term = randomNum();
+
+  let term = 0;
+  do {
+    term = randomNum();
+  } while (term === 0 || term > max);
   return term;
 };
 

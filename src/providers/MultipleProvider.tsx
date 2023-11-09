@@ -12,7 +12,7 @@ interface Child {
 
 // 定数
 const QUESTION_AMOUNT = 20;
-const MAX_NUM = 10;
+const MAX_NUM = 30;
 
 // コンテキスト作成
 export const MultipleContext = createContext({} as Value);
@@ -55,10 +55,10 @@ export const MultipleProvider = ({ children }: Child) => {
    */
   // index, 式の項変更
   // index変更
-  const setCount = (num: 1 | 0 = 1) => {
+  const setCount = async (num: 1 | 0 = 1) => {
     if (num === 0) {
-      setIndex(1);
-      setIndex(0);
+      await setIndex(1);
+      await setIndex(0);
     } else {
       setIndex((i) => (i += 1));
     }
@@ -173,7 +173,7 @@ export const MultipleProvider = ({ children }: Child) => {
   };
 
   // タイマー設定
-  const { timerControl } = useInterval({
+  const { timerControl, timerStart, timerEnd } = useInterval({
     onUpdate: () => {
       setTime((t) => t + 1);
     },
@@ -211,6 +211,7 @@ export const MultipleProvider = ({ children }: Child) => {
   // context
   const value: Value = {
     amount: QUESTION_AMOUNT,
+    maxNum: MAX_NUM,
     index,
     thisAnswer,
     inputAsAnswer,
@@ -221,12 +222,15 @@ export const MultipleProvider = ({ children }: Child) => {
     termA,
     termB,
     mode,
+    setTime,
     setCount,
     updateAnswer,
     setMistakesCount,
     clearRecord,
     addRecord,
     timerControl,
+    timerStart,
+    timerEnd,
     changeMode,
   };
 
