@@ -1,5 +1,5 @@
-import { CompMultipleLine } from './parts/CompMultipleLine';
-import { Timer } from './parts/Timer';
+import { CompMultipleLine } from './multiple/CompMultipleLine';
+import { Timer } from './multiple/Timer';
 
 export const CalcMultiple = () => {
   return (
